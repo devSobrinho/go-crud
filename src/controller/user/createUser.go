@@ -2,7 +2,7 @@ package userController
 
 import (
 	"github.com/devSobrinho/go-crud/src/configuration/validation"
-	request "github.com/devSobrinho/go-crud/src/model/request/user"
+	request "github.com/devSobrinho/go-crud/src/controller/model/request/user"
 	"github.com/gin-gonic/gin"
 )
 
