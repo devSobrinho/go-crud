@@ -6,13 +6,13 @@ import (
 	model "github.com/devSobrinho/go-crud/src/model/user"
 )
 
-func NewUserDomainService() UserDomainService {
+func NewUserDomainService() UserDomainServiceInterface {
 	return &userDomainService{}
 }
 
 type userDomainService struct{}
 
-type UserDomainService interface {
+type UserDomainServiceInterface interface {
 	CreateUser(model.UserDomainInterface) *rest_err.RestErr
 	UpdaterUser(string, model.UserDomainInterface) *rest_err.RestErr
 	FindUser(string) (*model.UserDomainInterface, *rest_err.RestErr)

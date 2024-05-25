@@ -12,7 +12,7 @@ var (
 	UserDomainInterface model.UserDomainInterface
 )
 
-func (uc *userControllerInterface) CreateUser(c *gin.Context) {
+func (uc *userController) CreateUser(c *gin.Context) {
 
 	var userRequest request.UserCreateRequest
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
