@@ -4,6 +4,7 @@ import (
 	"github.com/devSobrinho/go-crud/src/configuration/validation"
 	request "github.com/devSobrinho/go-crud/src/controller/model/request/user"
 	model "github.com/devSobrinho/go-crud/src/model/user"
+	view "github.com/devSobrinho/go-crud/src/view/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,5 +32,7 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 		c.JSON(err.Code, err)
 	}
 
-	c.JSON(200, domain.GetPassword())
+	response := view.ConvertUserDomainToResponse(domain)
+
+	c.JSON(201, response)
 }
