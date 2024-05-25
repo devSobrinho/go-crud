@@ -1,4 +1,4 @@
-package userController
+package controller
 
 import (
 	"github.com/devSobrinho/go-crud/src/configuration/validation"
