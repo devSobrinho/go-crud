@@ -1,11 +1,15 @@
 package routes
 
 import (
-	userController "github.com/devSobrinho/go-crud/src/controller/user"
+	controller "github.com/devSobrinho/go-crud/src/controller/user"
+	"github.com/devSobrinho/go-crud/src/model/user/service"
 	"github.com/gin-gonic/gin"
 )
 
 func InitRoutes(r *gin.RouterGroup) {
+
+	userService := service.NewUserDomainService()
+	userController := controller.NewUserControllerInterface(userService)
 
 	r.GET("/user/:userId", userController.FindUserById)
 	r.GET("/user/email/:userEmail", userController.FindUserByEmail)
