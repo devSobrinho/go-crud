@@ -4,13 +4,18 @@ import (
 	"github.com/devSobrinho/go-crud/src/configuration/rest_err"
 
 	model "github.com/devSobrinho/go-crud/src/model/user"
+	"github.com/devSobrinho/go-crud/src/model/user/repository"
 )
 
-func NewUserDomainService() UserDomainServiceInterface {
-	return &userDomainService{}
+func NewUserDomainService(repo repository.UserRepositoryInterface) UserDomainServiceInterface {
+	return &userDomainService{
+		repo,
+	}
 }
 
-type userDomainService struct{}
+type userDomainService struct {
+	repo repository.UserRepositoryInterface
+}
 
 type UserDomainServiceInterface interface {
 	CreateUser(model.UserDomainInterface) *rest_err.RestErr
