@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/devSobrinho/go-crud/src/controller/routes"
+	controller "github.com/devSobrinho/go-crud/src/controller/user"
+	"github.com/devSobrinho/go-crud/src/model/user/service"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -17,7 +19,10 @@ func main() {
 
 	router := gin.Default()
 
-	routes.InitRoutes(&router.RouterGroup)
+	userService := service.NewUserDomainService()
+	userController := controller.NewUserControllerInterface(userService)
+
+	routes.InitRoutes(&router.RouterGroup, userController)
 
 	port := ":" + os.Getenv("APP_PORT")
 
