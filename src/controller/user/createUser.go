@@ -4,7 +4,6 @@ import (
 	"github.com/devSobrinho/go-crud/src/configuration/validation"
 	request "github.com/devSobrinho/go-crud/src/controller/model/request/user"
 	model "github.com/devSobrinho/go-crud/src/model/user"
-	"github.com/devSobrinho/go-crud/src/model/user/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,7 +11,7 @@ var (
 	UserDomainInterface model.UserDomainInterface
 )
 
-func CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 
 	var userRequest request.UserCreateRequest
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
@@ -28,9 +27,7 @@ func CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	service := service.NewUserDomainService()
-
-	if err := service.CreateUser(domain); err != nil {
+	if err := uc.service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 	}
 
