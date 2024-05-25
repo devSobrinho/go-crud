@@ -3,7 +3,12 @@ package userController
 import (
 	"github.com/devSobrinho/go-crud/src/configuration/validation"
 	request "github.com/devSobrinho/go-crud/src/controller/model/request/user"
+	model "github.com/devSobrinho/go-crud/src/model/user"
 	"github.com/gin-gonic/gin"
+)
+
+var (
+	UserDomainInterface model.UserDomainInterface
 )
 
 func CreateUser(c *gin.Context) {
@@ -14,5 +19,17 @@ func CreateUser(c *gin.Context) {
 		c.JSON(errRest.Code, errRest)
 		return
 	}
-	c.JSON(200, userRequest)
+
+	domain := model.NewUserDomain(
+		userRequest.Email,
+		userRequest.Password,
+		userRequest.Name,
+		userRequest.Age,
+	)
+
+	if err := domain.CreateUser(); err != nil {
+		c.JSON(err.Code, err)
+	}
+
+	c.JSON(200, domain)
 }
