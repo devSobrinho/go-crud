@@ -7,13 +7,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func NewUserDomain(
-	email, password, name string,
-	age int8,
-) UserDomainInterface {
-	return &userDomain{
-		email, password, name, age,
-	}
+type UserDomainInterface interface {
+	GetEmail() string
+	GetPassword() string
+	GetName() string
+	GetAge() int8
+
+	EncryptPassword() (string, *rest_err.RestErr)
 }
 
 type userDomain struct {
@@ -23,14 +23,29 @@ type userDomain struct {
 	age      int8
 }
 
+func (u *userDomain) GetEmail() string {
+	return u.email
+}
+
+func (u *userDomain) GetPassword() string {
+	return u.password
+}
+
+func (u *userDomain) GetName() string {
+	return u.name
+}
+
+func (u *userDomain) GetAge() int8 {
+	return u.age
+}
+
 func (u *userDomain) EncryptPassword() (string, *rest_err.RestErr) {
-	password := u.password
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(u.password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", rest_err.NewInternalServerError("Error encrypting password")
 	}
 	logger.Info("EncryptPassword user"+string(hash), zap.String("journey", "encryptPassword"))
-
+	u.password = string(hash)
 	return string(hash), nil
 }
 
@@ -43,9 +58,11 @@ func (u *userDomain) ComparePassword(hash string) *rest_err.RestErr {
 	return nil
 }
 
-type UserDomainInterface interface {
-	CreateUser() *rest_err.RestErr
-	UpdaterUser(string) *rest_err.RestErr
-	FindUser(string) (*userDomain, *rest_err.RestErr)
-	DeleteUser(string) *rest_err.RestErr
+func NewUserDomain(
+	email, password, name string,
+	age int8,
+) UserDomainInterface {
+	return &userDomain{
+		email, password, name, age,
+	}
 }

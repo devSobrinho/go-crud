@@ -4,6 +4,7 @@ import (
 	"github.com/devSobrinho/go-crud/src/configuration/validation"
 	request "github.com/devSobrinho/go-crud/src/controller/model/request/user"
 	model "github.com/devSobrinho/go-crud/src/model/user"
+	"github.com/devSobrinho/go-crud/src/model/user/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,9 +28,11 @@ func CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	if err := domain.CreateUser(); err != nil {
+	service := service.NewUserDomainService()
+
+	if err := service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 	}
 
-	c.JSON(200, domain)
+	c.JSON(200, domain.GetPassword())
 }

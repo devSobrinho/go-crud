@@ -1,4 +1,4 @@
-package model
+package service
 
 import (
 	"github.com/devSobrinho/go-crud/src/configuration/logger"
@@ -6,8 +6,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func (u *userDomain) CreateUser() *rest_err.RestErr {
-	logger.Info("CreateUser model", zap.String("journey", "createUser"))
-	u.EncryptPassword()
+func (*userDomainService) DeleteUser(id string) *rest_err.RestErr {
+	logger.Info("DeleteUser model", zap.String("journey", "deleteUser"))
+
 	return nil
 }
