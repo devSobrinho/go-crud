@@ -35,5 +35,17 @@ func (u *userController) FindUserById(c *gin.Context) {
 }
 
 func (u *userController) FindUserByEmail(c *gin.Context) {
-	// Your code here
+	logger.Info("Inicia FindUserByEmail controller", zap.String("journey", "findUserByEmail"))
+	userEmail := c.Param("userEmail")
+
+	domainResult, err := u.service.FindUserByEmail(userEmail)
+	if err != nil {
+		logger.Error("Erro ao tentar chamar FindUserById service", err, zap.String("journey", "findUserByEmail"))
+
+		c.JSON(err.Code, err)
+		return
+	}
+
+	response := view.ConvertUserDomainToResponse(domainResult)
+	c.JSON(http.StatusOK, response)
 }
