@@ -7,10 +7,21 @@ import (
 	"go.uber.org/zap"
 )
 
-func (service *userDomainService) CreateUser(domain model.UserDomainInterface) *rest_err.RestErr {
-	logger.Info("CreateUser model", zap.String("journey", "createUser"))
+func (service *userDomainService) CreateUser(domain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Inicia CreateUser service", zap.String("journey", "createUser"))
 	if _, err := domain.EncryptPassword(); err != nil {
-		return err
+		logger.Error("Erro ao tentar chamar encriptar a senha", err, zap.String("journey", "createUser"))
+		return nil, err
 	}
-	return nil
+
+	repository, err := service.repo.CreateUser(domain)
+
+	if err != nil {
+		logger.Error("Erro ao tentar chamar o repository", err, zap.String("journey", "createUser"))
+		return nil, err
+	}
+
+	logger.Info("CreateUser service executado com sucesso", zap.String("journey", "createUser"))
+
+	return repository, nil
 }
