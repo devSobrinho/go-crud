@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"os"
 
 	"github.com/devSobrinho/go-crud/src/configuration/logger"
 	"github.com/devSobrinho/go-crud/src/configuration/rest_err"
@@ -17,9 +16,7 @@ func (ur *userRepository) CreateUser(
 ) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia createUser repository", zap.String("journey", "createUser"))
 
-	collectionName := os.Getenv(ENV_MONGO_COLLECTION_USER)
-
-	collection := ur.databaseConnection.Collection(collectionName)
+	collection := getCollection(ur)
 	value := converter.ConvertDomainToEntity(userDomain)
 	result, err := collection.InsertOne(context.Background(), value)
 
