@@ -6,8 +6,14 @@ import (
 	"go.uber.org/zap"
 )
 
-func (*userDomainService) DeleteUser(id string) *rest_err.RestErr {
+func (s *userDomainService) DeleteUser(id string) (string, *rest_err.RestErr) {
 	logger.Info("DeleteUser model", zap.String("journey", "deleteUser"))
 
-	return nil
+	response, err := s.userRepository.DeleteUser(id)
+	if err != nil {
+		logger.Error("Erro ao tentar chamar DeleteUser repository", err, zap.String("journey", "deleteUser"))
+		return "", err
+	}
+
+	return response, nil
 }

@@ -39,6 +39,7 @@ type UserRepositoryInterface interface {
 		email string,
 		password string,
 	) (model.UserDomainInterface, *rest_err.RestErr)
+	DeleteUser(id string) (string, *rest_err.RestErr)
 }
 
 func getCollection(ur *userRepository) *mongo.Collection {
