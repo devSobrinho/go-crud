@@ -4,18 +4,15 @@ import (
 	"os"
 	"time"
 
+	constants "github.com/devSobrinho/go-crud/src/configuration/contants"
 	"github.com/devSobrinho/go-crud/src/configuration/logger"
 	rest_err "github.com/devSobrinho/go-crud/src/configuration/rest_err"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
 
-var (
-	ENV_JWT_SECRET = "JWT_SECRET"
-)
-
 func (u *userDomain) GenerateToken() (string, *rest_err.RestErr) {
-	secret := os.Getenv(ENV_JWT_SECRET)
+	secret := os.Getenv(constants.ENV_JWT_SECRET)
 
 	claims := jwt.MapClaims{
 		"id":    u.GetID(),

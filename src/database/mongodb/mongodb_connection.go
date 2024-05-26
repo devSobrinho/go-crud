@@ -4,20 +4,16 @@ import (
 	"context"
 	"os"
 
+	constants "github.com/devSobrinho/go-crud/src/configuration/contants"
 	"github.com/devSobrinho/go-crud/src/configuration/logger"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
 
-var (
-	ENV_MONGO_URL = "MONGO_URL"
-	ENV_MONGO_DB  = "MONGO_DB"
-)
-
 func NewMongoDBConnection(ctx context.Context) (*mongo.Database, error) {
-	mongoURI := os.Getenv(ENV_MONGO_URL)
-	mongoDB := os.Getenv(ENV_MONGO_DB)
+	mongoURI := os.Getenv(constants.ENV_MONGO_URL)
+	mongoDB := os.Getenv(constants.ENV_MONGO_DB)
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
 	if err != nil {

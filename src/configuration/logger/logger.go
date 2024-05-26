@@ -4,15 +4,13 @@ import (
 	"os"
 	"strings"
 
+	constants "github.com/devSobrinho/go-crud/src/configuration/contants"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 var (
 	log *zap.Logger
-
-	ENV_LOG_OUTPUT = "LOG_OUTPUT"
-	ENV_LOG_LEVEL  = "LOG_LEVEL"
 )
 
 func init() {
@@ -45,7 +43,7 @@ func Error(message string, err error, tags ...zap.Field) {
 }
 
 func getOutputLogs() string {
-	output := strings.ToLower(strings.TrimSpace(os.Getenv(ENV_LOG_OUTPUT)))
+	output := strings.ToLower(strings.TrimSpace(os.Getenv(constants.ENV_LOG_OUTPUT)))
 	if output == "" {
 		return "stdout"
 	}
@@ -53,7 +51,7 @@ func getOutputLogs() string {
 }
 
 func getLevelLogs() zapcore.Level {
-	level := strings.ToLower(strings.TrimSpace(os.Getenv(ENV_LOG_LEVEL)))
+	level := strings.ToLower(strings.TrimSpace(os.Getenv(constants.ENV_LOG_LEVEL)))
 	switch level {
 	case "debug":
 		return zap.DebugLevel
