@@ -42,12 +42,12 @@ func (uc *userController) CreateUser(c *gin.Context) {
 		return
 	}
 
+	response := view.ConvertUserDomainToResponse(domainResult)
+
 	logger.Info(
 		"CreateUser controller executou com sucesso",
 		zap.String("userId", domainResult.GetID()),
 		zap.String("journey", "createUser"),
 	)
-
-	response := view.ConvertUserDomainToResponse(domainResult)
 	c.JSON(http.StatusCreated, response)
 }

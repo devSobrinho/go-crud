@@ -7,14 +7,14 @@ import (
 	"github.com/devSobrinho/go-crud/src/model/user/repository"
 )
 
-func NewUserDomainService(repo repository.UserRepositoryInterface) UserDomainServiceInterface {
+func NewUserDomainService(userRepository repository.UserRepositoryInterface) UserDomainServiceInterface {
 	return &userDomainService{
-		repo,
+		userRepository,
 	}
 }
 
 type userDomainService struct {
-	repo repository.UserRepositoryInterface
+	userRepository repository.UserRepositoryInterface
 }
 
 type UserDomainServiceInterface interface {
