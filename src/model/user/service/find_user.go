@@ -21,3 +21,8 @@ func (u *userDomainService) FindUserByEmail(email string) (model.UserDomainInter
 	logger.Info("Inicia serviço findUserByEmail", zap.String("journey", "findUserByEmail"))
 	return u.userRepository.FindUserByEmail(email)
 }
+
+func (u *userDomainService) FindUserByEmailAndPassword(email, password string) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Inicia serviço findUserByEmailAndPassword", zap.String("journey", "findUserByEmailAndPassword"))
+	return u.userRepository.FindUserByEmailAndPassword(email, password)
+}
