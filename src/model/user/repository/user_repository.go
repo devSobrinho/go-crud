@@ -46,3 +46,11 @@ func getCollection(ur *userRepository) *mongo.Collection {
 	collection := ur.databaseConnection.Collection(collectionName)
 	return collection
 }
+
+func errorTreatmentNoDocuments(err error, errMessageNoDocuments string, errMessageDefault string) *rest_err.RestErr {
+	if err == mongo.ErrNoDocuments {
+		return rest_err.NewNotFoundError(errMessageNoDocuments)
+	}
+
+	return rest_err.NewInternalServerError(errMessageDefault)
+}

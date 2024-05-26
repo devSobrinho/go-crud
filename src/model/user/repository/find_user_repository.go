@@ -52,18 +52,11 @@ func (u *userRepository) FindUserById(
 	filter := bson.D{{Key: "id", Value: id}}
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			errorMessage := "Usuário não encontrado"
-			logger.Error(errorMessage, err, zap.String("journey", "findUserById"))
+		logger.Error("Erro findUserById ao buscar usuario", err, zap.String("journey", "findUserByEmailAndPassword"))
 
-			return nil, rest_err.NewNotFoundError(errorMessage)
-		}
-		errorMessage := "Erro ao tentar buscar usuário"
-		logger.Error(errorMessage,
-			err,
-			zap.String("journey", "findUserById"))
-
-		return nil, rest_err.NewInternalServerError(errorMessage)
+		errorMessage := "Dados inválidos"
+		errRest := errorTreatmentNoDocuments(err, errorMessage, errorMessage)
+		return nil, errRest
 	}
 	return nil, nil
 }
@@ -79,18 +72,10 @@ func (u *userRepository) FindUserByEmail(
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
 
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			errorMessage := "Usuário com email %s não encontrado"
-			logger.Error(errorMessage, err, zap.String("journey", "findUserByEmail"))
+		logger.Error("Erro findUserByEmail ao buscar usuario", err, zap.String("journey", "findUserByEmail"))
 
-			return nil, rest_err.NewNotFoundError(errorMessage)
-		}
-		errorMessage := "Erro ao tentar buscar usuário por email"
-		logger.Error(errorMessage,
-			err,
-			zap.String("journey", "findUserByEmail"))
-
-		return nil, rest_err.NewInternalServerError(errorMessage)
+		errRest := errorTreatmentNoDocuments(err, "Usuário não encontrado", "Erro ao tentar buscar usuário")
+		return nil, errRest
 	}
 
 	logger.Info("FindUserByEmail repository executado com sucesso", zap.String("journey", "findUserByEmail"))
@@ -111,18 +96,11 @@ func (u *userRepository) FindUserByEmailAndPassword(
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
 
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			errorMessage := "Dados inválidos"
-			logger.Error(errorMessage, err, zap.String("journey", "findUserByEmailAndPassword"))
+		logger.Error("Erro findUserByEmailAndPassword ao buscar usuario", err, zap.String("journey", "findUserByEmailAndPassword"))
 
-			return nil, rest_err.NewNotFoundError(errorMessage)
-		}
 		errorMessage := "Dados inválidos"
-		logger.Error(errorMessage,
-			err,
-			zap.String("journey", "findUserByEmailAndPassword"))
-
-		return nil, rest_err.NewInternalServerError(errorMessage)
+		errRest := errorTreatmentNoDocuments(err, errorMessage, errorMessage)
+		return nil, errRest
 	}
 
 	response := converter.ConvertEntityToDomain(*userEntity)
