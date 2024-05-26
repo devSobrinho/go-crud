@@ -17,8 +17,8 @@ func (u *userDomain) EncryptPassword() (string, *rest_err.RestErr) {
 	return string(hash), nil
 }
 
-func (u *userDomain) ComparePassword(hash string) *rest_err.RestErr {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(u.password))
+func (u *userDomain) ComparePassword(password string) *rest_err.RestErr {
+	err := bcrypt.CompareHashAndPassword([]byte(u.password), []byte(password))
 	if err != nil {
 		return rest_err.NewBadRequestError("Senha inválida")
 	}
