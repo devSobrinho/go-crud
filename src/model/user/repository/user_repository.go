@@ -29,6 +29,10 @@ type UserRepositoryInterface interface {
 	FindUserByEmail(
 		email string,
 	) (model.UserDomainInterface, *rest_err.RestErr)
+	FindUserByEmailAndPassword(
+		email string,
+		password string,
+	) (model.UserDomainInterface, *rest_err.RestErr)
 }
 
 func getCollection(ur *userRepository) *mongo.Collection {

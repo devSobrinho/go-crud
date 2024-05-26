@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"os"
 
 	"github.com/devSobrinho/go-crud/src/configuration/logger"
 	"github.com/devSobrinho/go-crud/src/configuration/rest_err"
@@ -18,10 +17,7 @@ func (ur *userRepository) FindUserByEmail(
 	email string,
 ) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia findUserByEmail repository", zap.String("journey", "findUserByEmail"))
-
-	collectionName := os.Getenv(ENV_MONGO_COLLECTION_USER)
-
-	collection := ur.databaseConnection.Collection(collectionName)
+	collection := getCollection(ur)
 	userEntity := &entity.UserEntity{}
 	filter := bson.D{{Key: "email", Value: email}}
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
@@ -43,5 +39,36 @@ func (ur *userRepository) FindUserByEmail(
 
 	logger.Info("CreateUser repository executado com sucesso", zap.String("journey", "createUser"))
 	response := converter.ConvertEntityToDomain(*userEntity)
+	return response, nil
+}
+
+func (ur *userRepository) FindUserByEmailAndPassword(
+	email string,
+	password string,
+) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Inicia findUserByEmailAndPassword repository", zap.String("journey", "findUserByEmailAndPassword"))
+	collection := getCollection(ur)
+	filter := bson.D{{Key: "email", Value: email}, {Key: "password", Value: password}}
+	userEntity := &entity.UserEntity{}
+
+	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			errorMessage := "Dados inválidos"
+			logger.Error(errorMessage, err, zap.String("journey", "findUserByEmailAndPassword"))
+
+			return nil, rest_err.NewNotFoundError(errorMessage)
+		}
+		errorMessage := "Dados inválidos"
+		logger.Error(errorMessage,
+			err,
+			zap.String("journey", "findUserByEmailAndPassword"))
+
+		return nil, rest_err.NewInternalServerError(errorMessage)
+	}
+
+	response := converter.ConvertEntityToDomain(*userEntity)
+
 	return response, nil
 }
