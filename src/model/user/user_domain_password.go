@@ -8,17 +8,17 @@ import (
 )
 
 func (u *userDomain) EncryptPassword() (string, *rest_err.RestErr) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(u.password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", rest_err.NewInternalServerError("Error encrypting password")
 	}
 	logger.Info("EncryptPassword user"+string(hash), zap.String("journey", "encryptPassword"))
-	u.Password = string(hash)
+	u.password = string(hash)
 	return string(hash), nil
 }
 
 func (u *userDomain) ComparePassword(hash string) *rest_err.RestErr {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(u.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(u.password))
 	if err != nil {
 		return rest_err.NewBadRequestError("Invalid password")
 	}
