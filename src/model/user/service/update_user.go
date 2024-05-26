@@ -7,8 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (*userDomainService) UpdaterUser(id string, domain model.UserDomainInterface) *rest_err.RestErr {
+func (s *userDomainService) UpdaterUser(id string, domain model.UserDomainInterface) *rest_err.RestErr {
 	logger.Info("UpdaterUser model", zap.String("journey", "updaterUser"))
-
-	return nil
+	return s.userRepository.UpdateUser(id, domain)
 }
