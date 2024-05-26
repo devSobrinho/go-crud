@@ -9,7 +9,14 @@ import (
 
 func (service *userDomainService) CreateUser(domain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia CreateUser service", zap.String("journey", "createUser"))
-	if _, err := domain.EncryptPassword(); err != nil {
+
+	if existEmail, _ := service.FindUserByEmail(domain.GetEmail()); existEmail != nil {
+		errRest := rest_err.NewNotFoundError("Email já cadastrado")
+		return nil, errRest
+	}
+
+	_, err := domain.EncryptPassword()
+	if err != nil {
 		logger.Error("Erro ao tentar chamar encriptar a senha", err, zap.String("journey", "createUser"))
 		return nil, err
 	}
