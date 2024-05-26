@@ -9,6 +9,7 @@ import (
 	"github.com/devSobrinho/go-crud/src/model/user/repository/entity"
 	"github.com/devSobrinho/go-crud/src/model/user/repository/entity/converter"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 )
@@ -49,7 +50,12 @@ func (u *userRepository) FindUserById(
 
 	collection := getCollection(u)
 	userEntity := &entity.UserEntity{}
-	filter := bson.D{{Key: "id", Value: id}}
+
+	logger.Info("Inicia findUserById repository", zap.String("journey", "findUserById"))
+
+	objectId, _ := primitive.ObjectIDFromHex(id)
+
+	filter := bson.D{{Key: "_id", Value: objectId}}
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
 	if err != nil {
 		logger.Error("Erro findUserById ao buscar usuario", err, zap.String("journey", "findUserByEmailAndPassword"))
@@ -58,7 +64,7 @@ func (u *userRepository) FindUserById(
 		errRest := errorTreatmentNoDocuments(err, errorMessage, errorMessage)
 		return nil, errRest
 	}
-
+	logger.Info(userEntity.Name, zap.String("journey", "findUserById"))
 	response := converter.ConvertEntityToDomain(*userEntity)
 	return response, nil
 }
