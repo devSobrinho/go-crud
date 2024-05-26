@@ -58,7 +58,9 @@ func (u *userRepository) FindUserById(
 		errRest := errorTreatmentNoDocuments(err, errorMessage, errorMessage)
 		return nil, errRest
 	}
-	return nil, nil
+
+	response := converter.ConvertEntityToDomain(*userEntity)
+	return response, nil
 }
 
 func (u *userRepository) FindUserByEmail(
