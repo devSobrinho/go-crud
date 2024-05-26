@@ -13,6 +13,34 @@ import (
 	"go.uber.org/zap"
 )
 
+func (ur *userRepository) FindUser(
+	userDomain model.UserDomainInterface,
+) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Inicia findUser repository", zap.String("journey", "findUser"))
+	collection := getCollection(ur)
+	userEntity := &entity.UserEntity{}
+	err := collection.FindOne(context.Background(), userDomain).Decode(userEntity)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			errorMessage := "Usuário não encontrado"
+			logger.Error(errorMessage, err, zap.String("journey", "findUser"))
+
+			return nil, rest_err.NewNotFoundError(errorMessage)
+		}
+		errorMessage := "Erro ao tentar buscar usuário"
+		logger.Error(errorMessage,
+			err,
+			zap.String("journey", "findUser"))
+
+		return nil, rest_err.NewInternalServerError(errorMessage)
+	}
+
+	logger.Info("FindUser repository executado com sucesso", zap.String("journey", "findUser"))
+	response := converter.ConvertEntityToDomain(*userEntity)
+	return response, nil
+}
+
 func (ur *userRepository) FindUserByEmail(
 	email string,
 ) (model.UserDomainInterface, *rest_err.RestErr) {
@@ -37,7 +65,7 @@ func (ur *userRepository) FindUserByEmail(
 		return nil, rest_err.NewInternalServerError(errorMessage)
 	}
 
-	logger.Info("CreateUser repository executado com sucesso", zap.String("journey", "createUser"))
+	logger.Info("FindUserByEmail repository executado com sucesso", zap.String("journey", "findUserByEmail"))
 	response := converter.ConvertEntityToDomain(*userEntity)
 	return response, nil
 }
