@@ -1,4 +1,4 @@
-package view
+package viewUser
 
 import (
 	response "github.com/devSobrinho/go-crud/src/controller/model/response/user"
