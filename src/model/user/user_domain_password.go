@@ -10,7 +10,7 @@ import (
 func (u *userDomain) EncryptPassword() (string, *rest_err.RestErr) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(u.password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", rest_err.NewInternalServerError("Error encrypting password")
+		return "", rest_err.NewInternalServerError("Erro ao tentar criptografar senha")
 	}
 	logger.Info("EncryptPassword user"+string(hash), zap.String("journey", "encryptPassword"))
 	u.password = string(hash)
@@ -20,7 +20,7 @@ func (u *userDomain) EncryptPassword() (string, *rest_err.RestErr) {
 func (u *userDomain) ComparePassword(hash string) *rest_err.RestErr {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(u.password))
 	if err != nil {
-		return rest_err.NewBadRequestError("Invalid password")
+		return rest_err.NewBadRequestError("Senha inválida")
 	}
 
 	return nil

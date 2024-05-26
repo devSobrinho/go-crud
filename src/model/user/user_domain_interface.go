@@ -10,6 +10,8 @@ type UserDomainInterface interface {
 	GetAge() int8
 	SetID(string)
 	EncryptPassword() (string, *rest_err.RestErr)
+	ComparePassword(string) *rest_err.RestErr
+	GenerateToken() (string, *rest_err.RestErr)
 }
 
 func NewUserDomain(
