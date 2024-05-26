@@ -13,11 +13,12 @@ import (
 	"go.uber.org/zap"
 )
 
-func (ur *userRepository) FindUser(
+func (u *userRepository) FindUser(
 	userDomain model.UserDomainInterface,
 ) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia findUser repository", zap.String("journey", "findUser"))
-	collection := getCollection(ur)
+
+	collection := getCollection(u)
 	userEntity := &entity.UserEntity{}
 	err := collection.FindOne(context.Background(), userDomain).Decode(userEntity)
 
@@ -41,11 +42,38 @@ func (ur *userRepository) FindUser(
 	return response, nil
 }
 
-func (ur *userRepository) FindUserByEmail(
+func (u *userRepository) FindUserById(
+	id string,
+) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Inicia findUserById repository", zap.String("journey", "findUserById"))
+
+	collection := getCollection(u)
+	userEntity := &entity.UserEntity{}
+	filter := bson.D{{Key: "id", Value: id}}
+	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			errorMessage := "Usuário não encontrado"
+			logger.Error(errorMessage, err, zap.String("journey", "findUserById"))
+
+			return nil, rest_err.NewNotFoundError(errorMessage)
+		}
+		errorMessage := "Erro ao tentar buscar usuário"
+		logger.Error(errorMessage,
+			err,
+			zap.String("journey", "findUserById"))
+
+		return nil, rest_err.NewInternalServerError(errorMessage)
+	}
+	return nil, nil
+}
+
+func (u *userRepository) FindUserByEmail(
 	email string,
 ) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia findUserByEmail repository", zap.String("journey", "findUserByEmail"))
-	collection := getCollection(ur)
+
+	collection := getCollection(u)
 	userEntity := &entity.UserEntity{}
 	filter := bson.D{{Key: "email", Value: email}}
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
@@ -70,12 +98,13 @@ func (ur *userRepository) FindUserByEmail(
 	return response, nil
 }
 
-func (ur *userRepository) FindUserByEmailAndPassword(
+func (u *userRepository) FindUserByEmailAndPassword(
 	email string,
 	password string,
 ) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia findUserByEmailAndPassword repository", zap.String("journey", "findUserByEmailAndPassword"))
-	collection := getCollection(ur)
+
+	collection := getCollection(u)
 	filter := bson.D{{Key: "email", Value: email}, {Key: "password", Value: password}}
 	userEntity := &entity.UserEntity{}
 
