@@ -5,12 +5,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitRoutes(r *gin.RouterGroup, deps dependencies.Dependencies) {
-	r.GET("/user/:userId", deps.UserController.FindUserById)
-	r.GET("/user/email/:userEmail", deps.UserController.FindUserByEmail)
-	r.POST("/user", deps.UserController.CreateUser)
-	r.PUT("/user/:userId", deps.UserController.UpdateUser)
-	r.DELETE("/user/:userId", deps.UserController.DeleteUser)
+type Gambis interface{}
 
-	r.POST("/auth/login", deps.AuthController.LoginUser)
+func InitRoutes(r *gin.RouterGroup, deps dependencies.Dependencies) {
+	userRouter := r.Group("/user")
+	{
+		userRouter.GET(":userId", deps.UserController.FindUserById)
+		userRouter.GET("/email/:userEmail", deps.UserController.FindUserByEmail)
+		userRouter.POST("/", deps.UserController.CreateUser)
+		userRouter.PUT(":userId", deps.UserController.UpdateUser)
+		userRouter.DELETE(":userId", deps.UserController.DeleteUser)
+	}
+
+	authRouter := r.Group("/auth")
+	{
+		authRouter.POST("/login", deps.AuthController.LoginUser)
+	}
+
 }
