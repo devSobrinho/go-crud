@@ -6,8 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Gambis interface{}
-
 func InitRoutes(r *gin.RouterGroup, deps dependencies.Dependencies) {
 	userRouter := r.Group("/user")
 	{
