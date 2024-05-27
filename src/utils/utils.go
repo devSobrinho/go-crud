@@ -37,3 +37,10 @@ func ValidationTokenAndExtractClaims(secretKey string, tokenString string) (jwt.
 	logger.Info("Token validado com sucesso", zap.String("journey", "validationTokenAndExtractClaims"))
 	return claims, nil
 }
+
+func TernaryCondition(condition bool, a, b interface{}) interface{} {
+	if condition {
+		return a
+	}
+	return b
+}
