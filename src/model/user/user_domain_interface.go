@@ -12,6 +12,7 @@ type UserDomainInterface interface {
 	EncryptPassword() (string, *rest_err.RestErr)
 	ComparePassword(string) *rest_err.RestErr
 	GenerateToken() (string, *rest_err.RestErr)
+	GenerateRefreshToken() (string, *rest_err.RestErr)
 }
 
 func NewUserDomain(

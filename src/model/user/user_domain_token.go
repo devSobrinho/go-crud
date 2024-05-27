@@ -13,7 +13,15 @@ import (
 
 func (u *userDomain) GenerateToken() (string, *rest_err.RestErr) {
 	secret := os.Getenv(constants.ENV_JWT_SECRET)
+	return u.generationToken(secret)
+}
 
+func (u *userDomain) GenerateRefreshToken() (string, *rest_err.RestErr) {
+	secret := os.Getenv(constants.ENV_JWT_SECRET_REFRESH)
+	return u.generationToken(secret)
+}
+
+func (u *userDomain) generationToken(secret string) (string, *rest_err.RestErr) {
 	claims := jwt.MapClaims{
 		"id":    u.GetID(),
 		"email": u.GetEmail(),
