@@ -6,6 +6,7 @@ var (
 
 	ENV_LOG_OUTPUT = "LOG_OUTPUT"
 	ENV_LOG_LEVEL  = "LOG_LEVEL"
+	ENV_LOG_ACTIVE = "LOG_ACTIVE"
 
 	ENV_MONGO_URL             = "MONGO_URL"
 	ENV_MONGO_DB              = "MONGO_DB"
