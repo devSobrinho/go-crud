@@ -4,13 +4,30 @@ import (
 	"os"
 
 	constants "github.com/devSobrinho/go-crud/src/configuration/contants"
+	"github.com/devSobrinho/go-crud/src/configuration/logger"
+	"github.com/devSobrinho/go-crud/src/configuration/rest_err"
 	userRequest "github.com/devSobrinho/go-crud/src/controller/model/request/user"
 	"github.com/devSobrinho/go-crud/src/utils"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func Logging(c *gin.Context) {
-	token := c.GetHeader("Authorization")
+	tokenHeader := c.GetHeader("Authorization")
+	cookie, errCookie := c.Cookie("token")
+	if errCookie != nil {
+		logger.Info("Cookie não encontrado", zap.String("journey", "logging"))
+	}
+
+	if tokenHeader == "" && cookie == "" {
+		logger.Info("Token não encontrado", zap.String("journey", "logging"))
+		errRest := rest_err.NewUnauthorizedError("Token não encontrado")
+		c.JSON(errRest.Code, errRest)
+		c.Abort()
+		return
+	}
+
+	token := utils.TernaryCondition(tokenHeader == "", cookie, tokenHeader).(string)
 
 	secretKey := os.Getenv(constants.ENV_JWT_SECRET)
 
