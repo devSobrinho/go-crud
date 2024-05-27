@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"os"
 
 	constants "github.com/devSobrinho/go-crud/src/configuration/contants"
@@ -41,6 +42,10 @@ func getCollection(ur *userRepository) *mongo.Collection {
 	collectionName := os.Getenv(constants.ENV_MONGO_COLLECTION_USER)
 	collection := ur.databaseConnection.Collection(collectionName)
 	return collection
+}
+
+func disconnect(ur *userRepository) {
+	ur.databaseConnection.Client().Disconnect(context.Background())
 }
 
 func errorTreatmentNoDocuments(err error, errMessageNoDocuments string, errMessageDefault string) *rest_err.RestErr {

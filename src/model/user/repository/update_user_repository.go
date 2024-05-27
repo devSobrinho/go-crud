@@ -18,6 +18,8 @@ func (u *userRepository) UpdateUser(
 	logger.Info("Inicia updateUser repository", zap.String("journey", "updateUser"))
 
 	collection := getCollection(u)
+	defer disconnect(u)
+
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objectId}}
 	age := userDomain.GetAge()

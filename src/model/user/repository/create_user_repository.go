@@ -11,12 +11,14 @@ import (
 	"go.uber.org/zap"
 )
 
-func (ur *userRepository) CreateUser(
+func (u *userRepository) CreateUser(
 	userDomain model.UserDomainInterface,
 ) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia createUser repository", zap.String("journey", "createUser"))
 
-	collection := getCollection(ur)
+	collection := getCollection(u)
+	defer disconnect(u)
+
 	value := converter.ConvertDomainToEntity(userDomain)
 	result, err := collection.InsertOne(context.Background(), value)
 

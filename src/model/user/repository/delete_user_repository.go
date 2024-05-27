@@ -14,6 +14,7 @@ func (u *userRepository) DeleteUser(id string) (string, *rest_err.RestErr) {
 	logger.Info("Inicia deleteUser repository", zap.String("journey", "deleteUser"))
 
 	collection := getCollection(u)
+	defer disconnect(u)
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objectId}}
 

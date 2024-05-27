@@ -98,6 +98,7 @@ func (u *userRepository) FindUserByEmailAndPassword(
 	logger.Info("Inicia findUserByEmailAndPassword repository", zap.String("journey", "findUserByEmailAndPassword"))
 
 	collection := getCollection(u)
+	defer disconnect(u)
 	filter := bson.D{{Key: "email", Value: email}, {Key: "password", Value: password}}
 	userEntity := &entity.UserEntity{}
 
