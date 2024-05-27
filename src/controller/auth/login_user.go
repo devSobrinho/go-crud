@@ -55,6 +55,9 @@ func (a *authController) LoginUser(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("token", token, 60*60*24, "/", "localhost", false, true)
+	c.SetCookie("refresh_token", refreshToken, 60*60*24, "/", "localhost", false, true)
+
 	userResponse := viewUser.ConvertUserDomainToResponse(responseUserDomain)
 	response := viewAuth.LoginResponse(token, refreshToken, userResponse)
 

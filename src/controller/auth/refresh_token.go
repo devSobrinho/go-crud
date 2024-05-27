@@ -63,5 +63,8 @@ func (a *authController) RefreshToken(c *gin.Context) {
 	user := viewUser.ConvertUserDomainToResponse(userDomain)
 	response := viewAuth.LoginResponse(token, refreshToken, user)
 
+	c.SetCookie("token", token, 60*60*24, "/", "localhost", false, true)
+	c.SetCookie("refresh_token", refreshToken, 60*60*24, "/", "localhost", false, true)
+
 	c.JSON(http.StatusOK, response)
 }
