@@ -12,10 +12,10 @@ func InitRoutes(r *gin.RouterGroup, deps dependencies.Dependencies) {
 	userRouter := r.Group("/user")
 	{
 		userRouter.GET(":userId", middleware.Logging, deps.UserController.FindUserById)
-		userRouter.GET("/email/:userEmail", deps.UserController.FindUserByEmail)
-		userRouter.POST("/", deps.UserController.CreateUser)
-		userRouter.PUT(":userId", deps.UserController.UpdateUser)
-		userRouter.DELETE(":userId", deps.UserController.DeleteUser)
+		userRouter.GET("/email/:userEmail", middleware.Logging, deps.UserController.FindUserByEmail)
+		userRouter.POST("/", middleware.Logging, deps.UserController.CreateUser)
+		userRouter.PUT(":userId", middleware.Logging, deps.UserController.UpdateUser)
+		userRouter.DELETE(":userId", middleware.Logging, deps.UserController.DeleteUser)
 	}
 
 	authRouter := r.Group("/auth")
