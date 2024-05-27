@@ -21,6 +21,7 @@ func InitRoutes(r *gin.RouterGroup, deps dependencies.Dependencies) {
 	authRouter := r.Group("/auth")
 	{
 		authRouter.POST("/login", deps.AuthController.LoginUser)
+		authRouter.POST("/refresh-token", deps.AuthController.RefreshToken)
 	}
 
 }
