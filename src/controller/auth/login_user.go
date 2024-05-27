@@ -47,8 +47,16 @@ func (a *authController) LoginUser(c *gin.Context) {
 		return
 	}
 
+	refreshToken, err := responseUserDomain.GenerateRefreshToken()
+	if err != nil {
+		logger.Error("Erro ao tentar gerar token", err, zap.String("journey", "loginUser"))
+
+		c.JSON(err.Code, err)
+		return
+	}
+
 	userResponse := viewUser.ConvertUserDomainToResponse(responseUserDomain)
-	response := viewAuth.LoginResponse(token, userResponse)
+	response := viewAuth.LoginResponse(token, refreshToken, userResponse)
 
 	c.JSON(http.StatusOK, response)
 }

@@ -15,6 +15,7 @@ func NewAuthControllerInterface(
 
 type AuthControllerInterface interface {
 	LoginUser(c *gin.Context)
+	RefreshToken(c *gin.Context)
 }
 
 type authController struct {
