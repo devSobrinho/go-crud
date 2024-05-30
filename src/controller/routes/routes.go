@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/devSobrinho/go-crud/src/configuration/dependencies"
+	"github.com/devSobrinho/go-crud/src/configuration/sse"
 	"github.com/devSobrinho/go-crud/src/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -24,6 +25,12 @@ func InitRoutes(r *gin.RouterGroup, deps dependencies.Dependencies) {
 	{
 		authRouter.POST("/login", deps.AuthController.LoginUser)
 		authRouter.POST("/refresh-token", deps.AuthController.RefreshToken)
+	}
+
+	sseRouter := authorizedRouter.Group("/sse")
+	{
+		sseRouter.GET("/", middleware.SSEMiddleware(), sse.Stream.ServeHTTP(), deps.SSEController.SSE)
+		sseRouter.POST("/", deps.SSEController.MessageSSE)
 	}
 
 }
