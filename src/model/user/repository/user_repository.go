@@ -25,8 +25,8 @@ type UserRepositoryInterface interface {
 		userDomain model.UserDomainInterface,
 	) (model.UserDomainInterface, *rest_err.RestErr)
 	FindUser(
-		userDomain model.UserDomainInterface,
-	) (model.UserDomainInterface, *rest_err.RestErr)
+		userDomain model.UserDomainInterfacePagination,
+	) ([]model.UserDomainInterface, *rest_err.RestErr)
 	FindUserById(
 		id string,
 	) (model.UserDomainInterface, *rest_err.RestErr)

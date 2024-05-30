@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (u *userDomainService) FindUser(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
+func (u *userDomainService) FindUser(userDomain model.UserDomainInterfacePagination) ([]model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia serviço findUser", zap.String("journey", "findUser"))
 	return u.userRepository.FindUser(userDomain)
 }

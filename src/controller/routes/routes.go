@@ -9,6 +9,7 @@ import (
 func InitRoutes(r *gin.RouterGroup, deps dependencies.Dependencies) {
 	userRouter := r.Group("/user")
 	{
+		userRouter.GET("/", middleware.Logging, deps.UserController.FindUser)
 		userRouter.GET(":userId", middleware.Logging, deps.UserController.FindUserById)
 		userRouter.GET("/email/:userEmail", middleware.Logging, deps.UserController.FindUserByEmail)
 		userRouter.POST("/", middleware.Logging, deps.UserController.CreateUser)

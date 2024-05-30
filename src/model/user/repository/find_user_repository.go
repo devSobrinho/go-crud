@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/devSobrinho/go-crud/src/configuration/logger"
 	"github.com/devSobrinho/go-crud/src/configuration/rest_err"
@@ -10,37 +11,54 @@ import (
 	"github.com/devSobrinho/go-crud/src/model/user/repository/entity/converter"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 )
 
 func (u *userRepository) FindUser(
-	userDomain model.UserDomainInterface,
-) (model.UserDomainInterface, *rest_err.RestErr) {
+	userDomain model.UserDomainInterfacePagination,
+) ([]model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("Inicia findUser repository", zap.String("journey", "findUser"))
 
 	collection := getCollection(u)
 	userEntity := &entity.UserEntity{}
-	err := collection.FindOne(context.Background(), userDomain).Decode(userEntity)
+	getUser := userDomain.GetUser()
 
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			errorMessage := "Usuário não encontrado"
-			logger.Error(errorMessage, err, zap.String("journey", "findUser"))
-
-			return nil, rest_err.NewNotFoundError(errorMessage)
-		}
-		errorMessage := "Erro ao tentar buscar usuário"
-		logger.Error(errorMessage,
-			err,
-			zap.String("journey", "findUser"))
-
-		return nil, rest_err.NewInternalServerError(errorMessage)
+	filter := bson.D{}
+	if getUser.GetID() != "" {
+		objectId, _ := primitive.ObjectIDFromHex(getUser.GetID())
+		filter = append(filter, bson.E{Key: "_id", Value: objectId})
 	}
 
+	if getUser.GetEmail() != "" {
+		filter = append(filter, bson.E{Key: "email", Value: getUser.GetEmail()})
+	}
+
+	fmt.Println(">>>", userDomain.GetPagination().Order)
+
+	cur, err := collection.Find(context.Background(), filter)
+	if err != nil {
+		logger.Error("Erro findUser ao buscar usuario", err, zap.String("journey", "findUser"))
+
+		errorMessage := "Dados inválidos"
+		errRest := errorTreatmentNoDocuments(err, errorMessage, errorMessage)
+		return nil, errRest
+	}
+
+	_ = cur.All(context.Background(), userEntity)
+
 	logger.Info("FindUser repository executado com sucesso", zap.String("journey", "findUser"))
-	response := converter.ConvertEntityToDomain(*userEntity)
-	return response, nil
+	var usersEntity []entity.UserEntity
+	if err = cur.All(context.Background(), &usersEntity); err != nil {
+		panic(err)
+	}
+
+	var results []model.UserDomainInterface
+	for _, user := range usersEntity {
+		response := converter.ConvertEntityToDomain(user)
+		results = append(results, response)
+	}
+
+	return results, nil
 }
 
 func (u *userRepository) FindUserById(
