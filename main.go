@@ -7,6 +7,7 @@ import (
 
 	"github.com/devSobrinho/go-crud/src/configuration/dependencies"
 	"github.com/devSobrinho/go-crud/src/configuration/logger"
+	"github.com/devSobrinho/go-crud/src/configuration/sse"
 	"github.com/devSobrinho/go-crud/src/controller/routes"
 	"github.com/devSobrinho/go-crud/src/database/mongodb"
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,8 @@ func main() {
 	}
 
 	deps := dependencies.InitDependencies(database)
+
+	sse.Stream = sse.NewServer()
 
 	router := gin.Default()
 	routes.InitRoutes(&router.RouterGroup, deps)
